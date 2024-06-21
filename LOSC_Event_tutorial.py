@@ -92,6 +92,9 @@ make_plots = 1
 plottype = "png"
 #plottype = "pdf"
 
+from pathlib import Path
+dir=Path(__file__).parent.absolute()
+print(dir)
 
 # In[2]:
 
@@ -120,22 +123,23 @@ import readligo as rl
 # In[3]:
 
 # Read the event properties from a local json file
-fnjson = "BBH_events_v2.json"
-try:
-    events = json.load(open(fnjson,"r"))
-except IOError:
+fnjson = str(dir/"BBH_events_v2.json")
+#try:
+events = json.load(open(fnjson,"r"))
+
+""" except IOError:
     print("Cannot find resource file "+fnjson)
     print("You can download it from https://losc.ligo.org/s/events/"+fnjson)
     print("Quitting.")
     quit()
-
+ """
 # did the user select the eventname ?
-try: 
-    events[eventname]
-except:
+#try: 
+events[eventname]
+""" except:
     print('You must select an eventname that is in '+fnjson+'! Quitting.')
     quit()
-
+ """
 
 # In[4]:
 
@@ -160,16 +164,16 @@ print(event)
 # Load LIGO data from a single file.
 # FIRST, define the filenames fn_H1 and fn_L1, above.
 #----------------------------------------------------------------
-try:
-    # read in data from H1 and L1, if available:
-    strain_H1, time_H1, chan_dict_H1 = rl.loaddata(fn_H1, 'H1')
-    strain_L1, time_L1, chan_dict_L1 = rl.loaddata(fn_L1, 'L1')
-except:
+#try:
+# read in data from H1 and L1, if available:
+strain_H1, time_H1, chan_dict_H1 = rl.loaddata(dir/fn_H1, 'H1')
+strain_L1, time_L1, chan_dict_L1 = rl.loaddata(dir/fn_L1, 'L1')
+""" except:
     print("Cannot find data files!")
     print("You can download them from https://losc.ligo.org/s/events/"+eventname)
     print("Quitting.")
     quit()
-
+ """
 
 # ## Data Gaps
 # **NOTE** that in general, LIGO strain time series data has gaps (filled with NaNs) when the detectors are not taking valid ("science quality") data. Analyzing these data requires the user to 
@@ -518,14 +522,14 @@ if make_plots:
 # In[13]:
 
 # read in the template (plus and cross) and parameters for the theoretical waveform
-try:
-    f_template = h5py.File(fn_template, "r")
-except:
+#try:
+f_template = h5py.File(dir/fn_template, "r")
+""" except:
     print("Cannot find template file!")
     print("You can download it from https://losc.ligo.org/s/events/"+eventname+'/'+fn_template)
     print("Quitting.")
     quit()
-
+ """
 
 # In[14]:
 
@@ -918,7 +922,7 @@ data_segments = 1
 if data_segments:
     # read in the data at 4096 Hz:
     # fn = 'L-L1_LOSC_4_V1-1126259446-32.hdf5'
-    strain, time, chan_dict = rl.loaddata(fn_L1, 'H1')
+    strain, time, chan_dict = rl.loaddata(dir/fn_L1, 'H1')
 
     print("Contents of all the key, value pairs in chan_dict")
     for keys,values in chan_dict.items():
